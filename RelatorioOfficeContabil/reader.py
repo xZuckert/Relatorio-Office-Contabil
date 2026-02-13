@@ -23,7 +23,7 @@ def processarTXT(caminhoArquivo):
         "max": None,
         "total": 0.0
     })
-    with open(caminhoArquivo, "r", encoding="latin-1", errors="ignore") as f:
+    with open(caminhoArquivo, "r", encoding="latin-1", errors="ignore") as f: #abre o txt e aplica o compilamento padrao em cada linha
         for linha in f:
             match = padrao.search(linha)
             if not match:
@@ -40,7 +40,7 @@ def processarTXT(caminhoArquivo):
 
             chave = (dia, serie) #agrupa por dia e serie
 
-            #faz o calculo dos numeros das notas para o relatorio diario
+            #faz o calculo dos numeros das notas do grupo
             if grupos[chave]["min"] is None:
                 grupos[chave]["min"] = numero
                 grupos[chave]["max"] = numero
@@ -48,5 +48,5 @@ def processarTXT(caminhoArquivo):
                 grupos[chave]["min"] = min(grupos[chave]["min"], numero)
                 grupos[chave]["max"] = max(grupos[chave]["max"], numero)
 
-            grupos[chave]["total"] += valor
+            grupos[chave]["total"] += valor #faz a soma de todas as notas do grupo
     return grupos
