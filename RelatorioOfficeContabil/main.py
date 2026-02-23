@@ -1,5 +1,6 @@
 import os
 from reader import processarTXT
+from xlGenerator import gerarExcel
 
 def main():
     caminhoTXT = r"RelatorioOfficeContabil\LivrosFiscais\livro.txt" #nome do arquivo (Teste)
@@ -10,6 +11,7 @@ def main():
         return
 
     grupos = processarTXT(caminhoTXT)
+    gerarExcel(grupos)
     print(grupos)
 
 if __name__ == "__main__": #executa o programa
