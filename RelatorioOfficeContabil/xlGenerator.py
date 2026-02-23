@@ -3,25 +3,28 @@ from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
 def gerarExcel(grupos, nome_saida="Relatorio.xlsx"):
+    # cria a planilha na memoria seleciona a planilha ativa e renomeia
     wb = Workbook()
     ws = wb.active
     ws.title = "Relatorio"
 
+    # cria o cabeçalho da planilha
     ws.append(["Dia", "Série", "número", "valor contabil (R$)"])
 
-    total_geral = 0
+    totalGeral = 0 # variavel da soma total de todos os dias
 
+    # Percorre as chaves do dicionario recupera os devidos valores e adiciona a linha na planilha
     for (dia, serie) in sorted(grupos):
         dados = grupos[(dia, serie)]
         intervalo = f"{dados['min']}-{dados['max']}"
         valor = round(dados["total"], 2)
 
-        total_geral += valor
+        totalGeral += valor
         ws.append([dia, serie, intervalo, valor])
 
-    ws.append(["", "", "TOTAL", round(total_geral, 2)])
+    ws.append(["", "", "TOTAL", round(totalGeral, 2)]) # Adiciona o valor total do mes
 
-    # ===== Estilo =====
+    #Estilo da planilha
     header_fill = PatternFill("solid", fgColor="1F4E79")
     header_font = Font(color="FFFFFF", bold=True)
     thin = Side(style="thin")
