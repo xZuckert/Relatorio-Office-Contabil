@@ -3,6 +3,9 @@ import pandas as pd
 from pywinauto import Application
 import os
 
+delay = 0.25
+PARAR_AUTOMACAO = False
+
 # Pega o mes e o ano do documento TXT
 def extrairMesAno(caminhoTXT):
     nome = os.path.basename(caminhoTXT)
@@ -37,7 +40,7 @@ def ativarEmpresa(janela, codigoEmpresa, mes, ano):
     # ESC 5 vezes para fechar qualquer janela aberta no office
     for i in range(5):
         janela.type_keys("{ESC}")
-        time.sleep(0.5)
+        time.sleep(delay)
 
     # Abrir Ativação de Empresa
     janela.type_keys("E")
@@ -55,15 +58,15 @@ def ativarEmpresa(janela, codigoEmpresa, mes, ano):
     janela.type_keys("{TAB}")
     janela.type_keys("{ENTER}")
 
-    time.sleep(5)
+    time.sleep(4)
 
     # Ir para Digitação
     janela.type_keys("D")
-    time.sleep(1.5)
+    time.sleep(1)
 
 def lancarProvisao(janela, dia, valor, numero):
     janela.type_keys("N") # Inicia novo lancamento
-    time.sleep(0.3)
+    time.sleep(delay)
 
     janela.type_keys("{TAB}") # Pula Lcto
 
@@ -84,11 +87,11 @@ def lancarProvisao(janela, dia, valor, numero):
     janela.type_keys(str(numero)) #Número das notas
     janela.type_keys("{PGDN}") # Gravar
 
-    time.sleep(0.5)
+    time.sleep(delay)
 
 def lancarPagamento(janela, dia, valor, numero):
     janela.type_keys("N")  # Inicia novo lancamento
-    time.sleep(0.3)
+    time.sleep(delay)
 
     janela.type_keys("{TAB}")  # Pula Lcto
 
@@ -109,9 +112,12 @@ def lancarPagamento(janela, dia, valor, numero):
     janela.type_keys(str(numero))  # Número das notas
     janela.type_keys("{PGDN}")  # Gravar
 
-    time.sleep(0.5)
+    time.sleep(delay)
 
 def executarAutomacao(caminhoTXT, caminhoExcel):
+    global PARAR_AUTOMACAO
+    PARAR_AUTOMACAO = False
+
     mes, ano = extrairMesAno(caminhoTXT)
     codigoEmpresa = extrairCodEmpresa(caminhoTXT)
 
@@ -122,6 +128,10 @@ def executarAutomacao(caminhoTXT, caminhoExcel):
     ativarEmpresa(janela, codigoEmpresa, mes, ano)
 
     for i, row in df.iterrows():
+        if PARAR_AUTOMACAO:
+            print("Automação interrompida")
+            break
+
         janela.set_focus()
         time.sleep(0.1)
         dia = int(row["Dia"])
@@ -129,6 +139,14 @@ def executarAutomacao(caminhoTXT, caminhoExcel):
         numero = row["número"]
 
         lancarProvisao(janela, dia, valor, numero)
+        if PARAR_AUTOMACAO:
+            print("Automação interrompida")
+            break
+
         janela.set_focus()
         time.sleep(0.1)
         lancarPagamento(janela, dia, valor, numero)
+
+def pararAutomacao():
+    global PARAR_AUTOMACAO
+    PARAR_AUTOMACAO = True

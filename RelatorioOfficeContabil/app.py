@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from reader import processarTXT
 from xlGenerator import gerarExcel
-from automation import executarAutomacao
+from automation import executarAutomacao, pararAutomacao
 
 class RelatorioApp:
     def __init__(self, root):
@@ -30,6 +30,10 @@ class RelatorioApp:
         btnIniciar = tk.Button(root, text="Executar Automação", command=self.iniciarAutomacao, width=30, bg="#1F4E79",
                                fg="white")
         btnIniciar.pack(pady=20)
+
+        # Botão Parar
+        btnParar = tk.Button(root, text="PARAR AUTOMAÇÃO", command=self.pararAutomacao, width=30, bg="red", fg="white")
+        btnParar.pack(pady=5)
 
         # Status
         self.label_status = tk.Label(root, text="")
@@ -72,6 +76,10 @@ class RelatorioApp:
         except Exception as e:
             self.label_status.config(text="Erro na automação.", fg="red")
             messagebox.showerror("Erro", str(e))
+
+    def pararAutom(self):
+        pararAutomacao()
+        self.label_status.config(text="Solicitação de parada enviada", fg="orange")
 
 if __name__ == "__main__": #executa o programa
     root = tk.Tk()
