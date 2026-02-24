@@ -32,7 +32,7 @@ class RelatorioApp:
         btnIniciar.pack(pady=20)
 
         # Botão Parar
-        btnParar = tk.Button(root, text="PARAR AUTOMAÇÃO", command=self.pararAutomacao, width=30, bg="red", fg="white")
+        btnParar = tk.Button(root, text="PARAR_AUTOMAÇÃO", command=self.pararAutom, width=30, bg="red", fg="white")
         btnParar.pack(pady=5)
 
         # Status
