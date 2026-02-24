@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from reader import processarTXT
 from xlGenerator import gerarExcel
+from automation import executarAutomacao
 
 class RelatorioApp:
     def __init__(self, root):
@@ -26,9 +27,9 @@ class RelatorioApp:
         self.LabelCaminho.pack(pady=5)
 
         # Botão gerar
-        btnGerar = tk.Button(root, text="Gerar Relatório", command=self.gerarRelatorio, width=30, bg="#1F4E79",
-                              fg="white")
-        btnGerar.pack(pady=20)
+        btnIniciar = tk.Button(root, text="Executar Automação", command=self.iniciarAutomacao, width=30, bg="#1F4E79",
+                               fg="white")
+        btnIniciar.pack(pady=20)
 
         # Status
         self.label_status = tk.Label(root, text="")
@@ -44,25 +45,32 @@ class RelatorioApp:
             self.caminhoTXT = caminho
             self.LabelCaminho.config(text=caminho)
 
-    def gerarRelatorio(self):
+    def iniciarAutomacao(self):
         if not self.caminhoTXT:
             messagebox.showwarning("Aviso", "Selecione um arquivo TXT primeiro.")
             return
 
         try:
+            # Primeiro gera o Excel
             grupos = processarTXT(self.caminhoTXT)
 
             pasta = os.path.dirname(self.caminhoTXT)
             nomeBase = os.path.splitext(os.path.basename(self.caminhoTXT))[0]
-
             caminhoExcel = os.path.join(pasta, f"{nomeBase}.xlsx")
 
             gerarExcel(grupos, caminhoExcel)
 
-            self.label_status.config(text="Relatório gerado com sucesso!", fg="green",)
-            messagebox.showinfo("Sucesso", f"Arquivo salvo em: {caminhoExcel}")
+            self.label_status.config(text="Iniciando automação...", fg="blue")
+            self.root.update()
+
+            # Executa automação
+            executarAutomacao(self.caminhoTXT, caminhoExcel)
+
+            self.label_status.config(text="Automação concluída com sucesso!", fg="green")
+            messagebox.showinfo("Sucesso", "Automação finalizada com sucesso.")
+
         except Exception as e:
-            self.label_status.config(text="Erro ao gerar o relatório.", fg="red")
+            self.label_status.config(text="Erro na automação.", fg="red")
             messagebox.showerror("Erro", str(e))
 
 if __name__ == "__main__": #executa o programa
